@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-    build:
+    test:
         environment:
             CC_TEST_REPORTER_ID: ebde6d86d229592905b267ff7536e349957989c045dded8b6a0143a2a9309782
         docker:
@@ -30,7 +30,7 @@ jobs:
                       npm test -- --coverage
                       # upload test report to Code Climate using `after-build`
                       ./cc-test-reporter after-build --coverage-input-type lcov --exit-code $?
-    deploy:
+    build:
         docker:
             - image: docker:17.05.0-ce-git
         steps:
@@ -65,7 +65,7 @@ jobs:
                   command: |
                       if [ "${CIRCLE_BRANCH}" == 'master' ]; then
                           TAG=$CIRCLE_BRANCH-0.1.$CIRCLE_BUILD_NUM 
-                          docker tag app "jallier/ezybucks_frontend:${TAG}"
+                          docker tag app "jallier/ezybucks_frontend:${TAG}" "jallier/ezybucks_frontend:latest"
                           docker login -u $DOCKER_USER -p $DOCKER_PASS 
                           docker push "jallier/ezybucks_frontend:${TAG}"
                           echo "Image pushed"
@@ -74,12 +74,12 @@ workflows:
     version: 2
     workflow:
         jobs:
-            - build
-            - deploy:
+            - test 
+            - build:
                   requires:
-                      - build
+                      - test 
                   filters:
                       branches:
                           only:
                               - master
-                              - master-ci
+                              - master-autodeploy
