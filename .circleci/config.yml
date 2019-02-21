@@ -71,12 +71,14 @@ jobs:
                           echo "Image pushed"
                       fi
     deploy:
+        docker:
+            - image: circleci/node:8
         steps:
             - add_ssh_keys:
                   fingerprints:
                       - '97:c1:56:62:31:4e:8b:14:02:59:07:9c:fb:16:1b:af'
             - run:
-                  name: Restart running containers
+                  name: Pull and restart running containers
                   command: |
                       ssh deployer@13.239.33.36 "./ssh_deploy.sh"
 workflows:
