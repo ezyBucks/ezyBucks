@@ -97,7 +97,6 @@ workflows:
                       branches:
                           only:
                               - master
-                              - master-autodeploy
             - deploy:
                   requires:
                       - build
@@ -105,4 +104,3 @@ workflows:
                       branches:
                           only:
                               - master
-                              - master-autodeploy
