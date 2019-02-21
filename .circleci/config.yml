@@ -78,6 +78,10 @@ jobs:
                   fingerprints:
                       - '97:c1:56:62:31:4e:8b:14:02:59:07:9c:fb:16:1b:af'
             - run:
+                name: Ensure key fingerprint is valid
+                command: |
+                    ssh-keyscan 13.239.33.36 >> ~/.ssh/known_hosts
+            - run:
                   name: Pull and restart running containers
                   command: |
                       ssh deployer@13.239.33.36 "./ssh_deploy.sh"
