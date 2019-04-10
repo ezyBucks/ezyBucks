@@ -23,6 +23,8 @@ export interface UserSelect extends User {
 
 interface TransactionContainerProps {
     user?: User;
+    balance?: number;
+    setBalance: typeof setBalance;
 }
 
 interface TransactionContainerState {
@@ -56,7 +58,7 @@ export class TransactionContainer extends React.Component<
 
     /**
      * Fetch the users from the api based on a search string.
-     * Currently returning all users 
+     * Currently returning all users
      * @param text The text query to send to the api
      * @returns Promise with the array of Users returned from the api
      */
@@ -119,7 +121,6 @@ export class TransactionContainer extends React.Component<
     handleUserChange = (value: string) => {
         this.setState({
             value,
-            users: [],
             fetchingUsers: false
         });
     };
@@ -137,7 +138,6 @@ export class TransactionContainer extends React.Component<
      */
     handleSend = async () => {
         const { amount, value } = this.state;
-        console.log('clicked send!');
         this.setState({ sending: true });
 
         // First, validate
@@ -174,6 +174,7 @@ export class TransactionContainer extends React.Component<
         notification.open({
             message: `${amount} ezyBucks sent to ${response.to.username}`
         });
+        this.props.setBalance((this.props.balance || 0) - amount);
     };
 
     /**
@@ -187,7 +188,7 @@ export class TransactionContainer extends React.Component<
     };
 
     render() {
-        const { fetchingUsers, users, sending } = this.state;
+        const { fetchingUsers, users, sending, value } = this.state;
         return (
             <TransactionView
                 handleUserChange={this.handleUserChange}
@@ -198,6 +199,7 @@ export class TransactionContainer extends React.Component<
                 fetchUsers={this.getUsers}
                 fetchingUsers={fetchingUsers}
                 users={users}
+                value={value}
             />
         );
     }
@@ -205,6 +207,7 @@ export class TransactionContainer extends React.Component<
 
 const mapStateToProps = (state: AppState) => {
     return {
+        balance: state.user.balance,
         user: state.user.user
     };
 };

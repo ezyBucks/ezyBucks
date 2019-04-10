@@ -15,6 +15,7 @@ interface TransactionViewProps {
     handleClick: () => string;
     sending: boolean;
     users: UserSelect[];
+    value: string | string[];
 }
 
 const formatter = (value: string | number | undefined) =>
@@ -40,6 +41,7 @@ const TransactionView: React.SFC<TransactionViewProps> = props => {
             <div style={{ width: '400px', paddingBottom: '15px' }}>
                 <h3>Transfer</h3>
                 <Select
+                    allowClear={true}
                     notFoundContent={
                         props.fetchingUsers && <Spin size={'small'} />
                     }
@@ -49,9 +51,12 @@ const TransactionView: React.SFC<TransactionViewProps> = props => {
                     onSearch={props.fetchUsers}
                     onChange={props.handleUserChange}
                     filterOption={selectFilter}
+                    value={props.value[0]}
                 >
                     {props.users.map(u => (
-                        <Select.Option key={u.value}>{u.text}</Select.Option>
+                        <Select.Option key={u.value} value={u.value}>
+                            {u.text}
+                        </Select.Option>
                     ))}
                 </Select>
             </div>
